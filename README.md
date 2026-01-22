@@ -1,8 +1,6 @@
 # questcli
 A Dart CLI, Gamified Tak-Manager
 
-<<<<<<< HEAD
-=======
 Turn your daily tasks into a role-playing adventure! Complete quests, gain XP, face bosses, and level up — all in your terminal.
 
 🚀 Installation
@@ -99,4 +97,3 @@ Replace the old binary with the new one.
 🎉 Enjoy Your Adventure!
 
 Turn your daily life into a fun RPG. Complete quests, face bosses, and become the ultimate adventurer — all from your terminal!
->>>>>>> c0adef364aff56be14aa170f53af6c5dc28056b4
