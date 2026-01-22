@@ -17,6 +17,7 @@ Make it executable:
 -> sudo mv quest /usr/local/bin/quest
 
 =====================================================================
+
 Windows
 
 Download quest.exe from the Releases page
