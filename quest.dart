@@ -1,7 +1,9 @@
 import 'package:args/args.dart';
+import 'package:quest/animations.dart';
+import 'package:quest/sounds.dart';
 import 'package:quest/storage.dart';
 
-void main(List<String> arguments) {
+void main(List<String> arguments) async{
   // Setup app folder & DB
   createAppFolder();
   final db = initDatabase();
@@ -51,10 +53,10 @@ void main(List<String> arguments) {
     // BEGIN → Story Intro
     // -------------------
     case 'begin':
-      print('🧙 Welcome, adventurer, to Quest CLI!');
-      print('Your journey begins in the Village.');
-      print('Type `quest menu` to see your available actions.');
-      print('Type `quest help` to see all commands.');
+      await playSound('assets/begin.mp3');
+      await slowprint('🧙 Welcome, Adventurer - Let your journey begin!');
+      await slowprint('Type `quest menu` to see your available actions.');
+      await slowprint('Type `quest help` to see all commands.');
       break;
 
     // -------------------
@@ -71,17 +73,17 @@ void main(List<String> arguments) {
       print('''
 Quest CLI Commands:
 
-quest begin     → Start your adventure
-quest menu      → Show interactive menu
-quest add       → Add a new task
-quest list      → List all tasks
-quest complete  → Complete a task
-quest stats     → Show your stats
-quest water     → Drink water (+1 potion)
-quest rest      → Take a break (+1 potion)
-quest potion    → Use a potion (+HP)
-quest map       → Show your map (future)
-quest end       → End the day / boss fight (future)
+quest begin     → 🐺 Let the games begin!
+quest menu      → 📋 Show interactive menu
+quest add       → 📝 Embark on a new quest
+quest list      → 📜 Journal	view of your quests
+quest complete  → 🏹 Conquer and complete a quest
+quest stats     → 🛡️ Show your character stats
+quest water     → 💧 Quench your thirst, gain XP
+quest rest      → 🛌 Meditate → recover, gain XP
+quest potion    → 🧪 Elixir →	use while defeating demons
+quest map       → 🗺️ World, the realm, unlocked places
+quest end       → 🌙 End the day, Nightfall is upon us
 ''');
       break;
 
@@ -130,6 +132,16 @@ quest end       → End the day / boss fight (future)
     case 'rest':
       gainPotion(db, 'rest');
       break;
+
+      case 'map':
+  showMap(db);
+  break;
+
+    
+    case 'end':
+  endDay(db);
+  break;
+
 
     default:
       print('Unknown command. Type `quest help` to see all commands.');
