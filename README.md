@@ -69,7 +69,9 @@ quest --help
 
 🎮 Getting Started
 
--> quest begin
+```bash
+quest begin
+```
 
 This will:
 Initialize your player stats (HP, XP, Potions, Level).
@@ -78,12 +80,14 @@ Begin a new day in your adventure.
 Quest Menu
 Once the game starts, you can interact via a menu:
 
--> quest menu
-
+```bash
+quest menu
+```
 End the Day
 
-->quest end
-
+```bash
+quest end
+```
 Ends your current day.
 Checks for unfinished quests.
 Triggers a boss fight if all requirements are met.
