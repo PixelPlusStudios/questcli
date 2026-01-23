@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:quest/animations.dart';
 import 'package:quest/sounds.dart';
+import 'package:quest/colors.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:path/path.dart' as path;
 
@@ -15,7 +16,7 @@ final dbPath = path.join(appDir.path, 'quest.db');
 void createAppFolder() {
   if (!appDir.existsSync()) {
     appDir.createSync();
-    print('Created app folder at ${appDir.path}');
+    print('${dim('Created app folder at')} ${cyan(appDir.path)}');
   }
 }
 
@@ -96,21 +97,21 @@ void addTask(Database db, String name) {
     'INSERT INTO tasks (name, completed) VALUES (?, ?);',
     [name, 0]
   );
-  print('✅ Task added: $name');
+  print('${green('✅ Task added:')} ${bold(name)}');
 }
 
 // List all tasks
 void listTasks(Database db) {
   final tasks = db.select('SELECT id, name, completed FROM tasks;');
   if (tasks.isEmpty) {
-    print('No tasks found. Add a quest using `add`.');
+    print(yellow('No tasks found. Add a quest using `add`.'));
     return;
   }
 
-  print('📜 Tasks:');
+  print(boldCyan('📜 Tasks:'));
   for (final row in tasks) {
-    final status = row['completed'] == 1 ? '✅' : '❌';
-    print('[${row['id']}] ${row['name']} $status');
+    final status = row['completed'] == 1 ? green('✅') : red('❌');
+    print('${cyan('[')}${bold('${row['id']}')}${cyan(']')} ${row['name']} $status');
   }
 }
 
@@ -122,12 +123,12 @@ void completeTask(Database db, int taskId) {
   );
 
   if (result.isEmpty) {
-    print('❌ Task not found!');
+    print(boldRed('❌ Task not found!'));
     return;
   }
 
   if (result.first['completed'] == 1) {
-    print('⚠️ Task already completed!');
+    print(boldYellow('⚠️ Task already completed!'));
     return;
   }
 
@@ -140,7 +141,7 @@ void completeTask(Database db, int taskId) {
   // Reward HP only
   db.execute('UPDATE player SET hp = hp + 10;'); // HP for task completion
 
-  print('✅ Task completed! HP +10');
+  print('${boldGreen('✅ Task completed!')} ${green('HP +10')}');
 }
 
 // Use Potion
@@ -149,12 +150,12 @@ void usePotion(Database db) {
   if (player.isEmpty) return;
 
   if (player['potions'] <= 0) {
-    print('❌ No potions available!');
+    print(boldRed('❌ No potions available!'));
     return;
   }
 
   db.execute('UPDATE player SET hp = hp + 10, potions = potions - 1;'); // restores HP
-  print('🧪 Potion used! HP +10');
+  print('${boldMagenta('🧪 Potion used!')} ${green('HP +10')}');
 }
 
 
@@ -178,11 +179,11 @@ void gainPotion(Database db, String type) {
       'UPDATE player SET potions = potions + ?, xp = ?;',
       [potionsToAdd, remainingXP]
     );
-    print('🎉 You gained $potionsToAdd potion(s)!');
+    print('${boldYellow('🎉 You gained')} ${boldMagenta('$potionsToAdd potion(s)!')}');
   }
 
-  final action = type == 'water' ? '💧 Drank water' : '😴 Took a break';
-  print('$action → XP +1 (current XP: $remainingXP)');
+  final action = type == 'water' ? cyan('💧 Drank water') : blue('😴 Took a break');
+  print('$action ${dim('→')} ${green('XP +1')} ${dim('(current XP:')} ${bold('$remainingXP')}${dim(')')}');
 }
 
 
@@ -209,15 +210,15 @@ Map<String, dynamic> getPlayer(Database db) {
 void showPlayerStats(Database db) {
   final p = getPlayer(db);
   if (p.isEmpty) {
-    print('No player found!');
+    print(boldRed('No player found!'));
     return;
   }
 
-  print('🧙 Adventurer Stats:');
-  print('❤️ HP: ${p['hp']}');
-  print('⭐ XP: ${p['xp']}');
-  print('🧪 Potions: ${p['potions']}');
-  print('Days Survived(Level): ${p['level']}\nPlace: ${p['place']}');
+  print(boldCyan('🧙 Adventurer Stats:'));
+  print('${red('❤️ HP:')} ${bold('${p['hp']}')}');
+  print('${yellow('⭐ XP:')} ${bold('${p['xp']}')}');
+  print('${magenta('🧪 Potions:')} ${bold('${p['potions']}')}');
+  print('${blue('Days Survived(Level):')} ${bold('${p['level']}')}\n${cyan('Place:')} ${bold('${p['place']}')}');
 }
 
 // Reset player stats to initial values
@@ -234,23 +235,23 @@ void resetPlayerStats(Database db) {
     'UPDATE player SET hp = 100, xp = 0, potions = 0, level = 1, place = ? WHERE id = ?;',
     ['Village', id],
   );
-  print('🔄 Player stats have been reset to the beginning.');
+  print(boldYellow('🔄 Player stats have been reset to the beginning.'));
 }
 
 // -------------------
 // Interactive Menu
 // -------------------
 void runMenu(Database db) {
-  print('\nSelect an action:');
-  print('1️⃣  Add Task');
-  print('2️⃣  List Tasks');
-  print('3️⃣  Complete Task');
-  print('4️⃣  Show Stats');
-  print('5️⃣  Drink Water');
-  print('6️⃣  Take a Break');
-  print('7️⃣  Use Potion');
-  print('8️⃣  Map');
-  print('0️⃣  Exit');
+  print('\n${boldCyan('Select an action:')}');
+  print('${cyan('1️⃣')}  Add Task');
+  print('${cyan('2️⃣')}  List Tasks');
+  print('${cyan('3️⃣')}  Complete Task');
+  print('${cyan('4️⃣')}  Show Stats');
+  print('${cyan('5️⃣')}  Drink Water');
+  print('${cyan('6️⃣')}  Take a Break');
+  print('${cyan('7️⃣')}  Use Potion');
+  print('${cyan('8️⃣')}  Map');
+  print('${red('0️⃣')}  Exit');
 
   stdout.write('Enter choice: ');
   final input = stdin.readLineSync()?.trim();
@@ -297,11 +298,11 @@ void runMenu(Database db) {
 
 
     case '0':
-      print('Exiting menu...');
+      print(dim('Exiting menu...'));
       break;
 
     default:
-      print('Invalid choice. Type `quest menu` to try again.');
+      print(boldYellow('Invalid choice. Type `quest menu` to try again.'));
   }
 }
 
@@ -318,8 +319,8 @@ Future<void> endDay(Database db) async {
 
   // 1️⃣ Unfinished tasks check
   if (hasPendingTasks(db) && !isEndConfirmed(db)) {
-    print('⚠️ You still have unfinished tasks!');
-    print('Run `quest end` again to ignore them and face the boss.');
+    print(boldYellow('⚠️ You still have unfinished tasks!'));
+    print(yellow('Run `quest end` again to ignore them and face the boss.'));
     confirmEnd(db);
     return;
   }
@@ -358,9 +359,9 @@ await slowprint('• If the roll is > your HP → you LOSE👎\n');
     // 🏆 WIN
     final hpGain = (hp * 0.5).round();
     await slowprint('⚔️ The omen favors you...');
-    print('🏆 VICTORY!');
-    print('⭐ XP +5');
-    print('❤️ HP +$hpGain');
+    print(boldGreen('🏆 VICTORY!'));
+    print(boldYellow('⭐ XP +5'));
+    print(boldRed('❤️ HP +$hpGain'));
  db.execute(
     'INSERT OR REPLACE INTO bosses (place, defeated) VALUES (?, 1);',
     [player['place']]
@@ -372,8 +373,8 @@ await slowprint('• If the roll is > your HP → you LOSE👎\n');
   } else {
     // 💀 LOSE
     final hpLoss = (hp * 0.5).round();
-    print('💀 Defeat...');
-    print('❤️ HP -$hpLoss');
+    print(boldRed('💀 Defeat...'));
+    print(red('❤️ HP -$hpLoss'));
 
     db.execute(
       'UPDATE player SET hp = hp - ?;',
@@ -394,10 +395,10 @@ await slowprint('• If the roll is > your HP → you LOSE👎\n');
     [newLevel, newPlace]
   );
 
-  await slowprint('📈 Level up!');
+  await slowprint(brightGreen('\n📈 Level up!'));
   await slowprint('📆 Days Survived: $newLevel.');
   await slowprint('📍 Current Place: $newPlace');
-  await slowprint('🌙 Day ended & Night falls.');
+  await slowprint(brightMagenta('🌙 Day ended & Night falls...'));
 }
 
 //Map
@@ -411,7 +412,7 @@ void showMap(Database db) {
   final currentPlaceIndex = (level - 1) ~/ 10;
   final localLevel = ((level - 1) % 10) + 1;
 
-  print('\n🗺️ World Map\n');
+  print('\n${boldCyan('🗺️ World Map')}\n');
 
 for (int i = 0; i < places.length; i++) {
   // Get boss defeated status
@@ -422,21 +423,22 @@ for (int i = 0; i < places.length; i++) {
   if (i < currentPlaceIndex) {
     // Place fully completed
     bossMark = '🏁';
-    print('${places[i].padRight(12)} $bossMark [##########] 10/10');
+    print('${green(places[i].padRight(12))} ${green(bossMark)} ${green('[##########]')} ${boldGreen('10/10')}');
   } else if (i == currentPlaceIndex) {
     // Current place
     final progress = '#' * localLevel + '-' * (10 - localLevel);
     bossMark = defeated ? '⚔️ ' : '📍';
-    print('${places[i].padRight(12)} $bossMark [$progress] $localLevel/10');
+    final progressBar = progress.replaceAll('#', green('#')).replaceAll('-', dim('-'));
+    print('${boldCyan(places[i].padRight(12))} ${cyan(bossMark)} [$progressBar] ${bold('$localLevel/10')}');
   } else {
     // Locked place
     bossMark = '🔒';
-    print('${places[i].padRight(12)} $bossMark [----------] Locked');
+    print('${dim(places[i].padRight(12))} ${dim(bossMark)} ${dim('[----------]')} ${dim('Locked')}');
   }
 }
 
-  print('\n🌙 Days Survived: $level');
-  print('📍 Current Place: ${places[currentPlaceIndex]}');
+  print('\n${blue('🌙 Days Survived:')} ${bold('$level')}');
+  print('${cyan('📍 Current Place:')} ${boldCyan(places[currentPlaceIndex])}');
 }
 
 // --------------------
@@ -488,7 +490,20 @@ bool isEndConfirmed(Database db) {
 }
 
 void confirmEnd(Database db) {
-  db.execute('INSERT OR REPLACE INTO day_state (id, end_confirmed) VALUES (1, 1);');
+  // Read current day_started value to preserve it
+  final current = db.select('SELECT day_started FROM day_state WHERE id = 1;');
+  int dayStartedValue = 1; // Default to 1
+  
+  if (current.isNotEmpty) {
+    final dayStarted = current.first['day_started'];
+    dayStartedValue = (dayStarted != null && dayStarted != 0) ? 1 : 1; // Ensure it's 1
+  }
+  
+  // Use INSERT OR REPLACE to set both values explicitly
+  db.execute(
+    'INSERT OR REPLACE INTO day_state (id, end_confirmed, day_started) VALUES (1, 1, ?);',
+    [dayStartedValue]
+  );
 }
 
 void resetDayState(Database db) {
@@ -501,7 +516,10 @@ void resetDayState(Database db) {
 
 bool isDayStarted(Database db) {
   final result = db.select('SELECT day_started FROM day_state WHERE id = 1;');
-  return result.isNotEmpty && result.first['day_started'] == 1;
+  if (result.isEmpty) return false;
+  final dayStarted = result.first['day_started'];
+  // Handle both int and potential NULL values
+  return dayStarted != null && (dayStarted == 1 || dayStarted == '1');
 }
 
 void startDay(Database db) {

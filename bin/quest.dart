@@ -2,6 +2,7 @@ import 'package:args/args.dart';
 import 'package:quest/animations.dart';
 import 'package:quest/sounds.dart';
 import 'package:quest/storage.dart';
+import 'package:quest/colors.dart';
 
 void main(List<String> arguments) async{
   // Setup app folder & DB
@@ -11,7 +12,7 @@ void main(List<String> arguments) async{
 
   // If no arguments, prompt user to begin
   if (arguments.isEmpty) {
-    print('Type `quest begin` to start your adventure.');
+    print(cyan('Type `quest begin` to start your adventure.'));
     return;
   }
 
@@ -36,14 +37,14 @@ void main(List<String> arguments) async{
 
   // Version
   if (results['version'] == true) {
-    print('Quest v0.1.0');
+    print(boldCyan('Quest v0.1.0'));
     return;
   }
 
   // No command
   if (results.command == null) {
-    print('Welcome to Quest CLI!');
-    print('Type `quest --help` to see commands.');
+    print(boldCyan('Welcome to Quest CLI!'));
+    print(cyan('Type `quest --help` to see commands.'));
     return;
   }
 
@@ -55,7 +56,7 @@ void main(List<String> arguments) async{
     // -------------------
     case 'begin':
       await playSound('lib/assets/begin.mp3');
-      await slowprint('🧙 Welcome, Adventurer - Let your journey begin!');
+      await slowprint(boldCyan('🧙 Welcome, Adventurer - Let your journey begin!'));
       await slowprint('Type `quest menu` to see your available actions.');
       await slowprint('Type `quest help` to see all commands.');
       startDay(db);
@@ -72,22 +73,19 @@ void main(List<String> arguments) async{
     // HELP → Show all commands
     // -------------------
     case 'help':
-      print('''
-Quest CLI Commands:
-
-quest begin     → 🐺 Let the games begin!
-quest menu      → 📋 Show interactive menu
-quest add       → 📝 Embark on a new quest
-quest list      → 📜 Journal	view of your quests
-quest complete  → 🏹 Conquer and complete a quest
-quest stats     → 🛡️ Show your character stats
-quest water     → 💧 Quench your thirst, gain XP
-quest rest      → 🛌 Meditate → recover, gain XP
-quest potion    → 🧪 Elixir →	use while defeating demons
-quest map       → 🗺️ World, the realm, unlocked places
-quest end       → 🌙 End the day, Nightfall is upon us
-quest reset     → 🔄 Reset player stats to the beginning
-''');
+      print('${boldCyan('Quest CLI Commands:')}\n');
+      print('${bold('quest begin')}     ${dim('→')} ${yellow('🐺 Let the games begin!')}');
+      print('${bold('quest menu')}      ${dim('→')} ${cyan('📋 Show interactive menu')}');
+      print('${bold('quest add')}       ${dim('→')} ${green('📝 Embark on a new quest')}');
+      print('${bold('quest list')}      ${dim('→')} ${blue('📜 Journal view of your quests')}');
+      print('${bold('quest complete')}  ${dim('→')} ${magenta('🏹 Conquer and complete a quest')}');
+      print('${bold('quest stats')}     ${dim('→')} ${yellow('🛡️ Show your character stats')}');
+      print('${bold('quest water')}     ${dim('→')} ${cyan('💧 Quench your thirst, gain XP')}');
+      print('${bold('quest rest')}      ${dim('→')} ${blue('🛌 Meditate → recover, gain XP')}');
+      print('${bold('quest potion')}    ${dim('→')} ${magenta('🧪 Elixir → use while defeating demons')}');
+      print('${bold('quest map')}       ${dim('→')} ${brightCyan('🗺️ World, the realm, unlocked places')}');
+      print('${bold('quest end')}       ${dim('→')} ${red('🌙 End the day, Nightfall is upon us')}');
+      print('${bold('quest reset')}     ${dim('→')} ${yellow('🔄 Reset player stats to the beginning')}');
       break;
 
     // -------------------
@@ -96,7 +94,7 @@ quest reset     → 🔄 Reset player stats to the beginning
     case 'add':
       final args = cmd.arguments;
       if (args.isEmpty) {
-        print('Usage: quest add "Task Name"');
+        print('${yellow('Usage:')} ${bold('quest add "Task Name"')}');
         return;
       }
       addTask(db, args.join(' '));
@@ -109,12 +107,12 @@ quest reset     → 🔄 Reset player stats to the beginning
     case 'complete':
       final args = cmd.arguments;
       if (args.isEmpty) {
-        print('Usage: quest complete <task_id>');
+        print('${yellow('Usage:')} ${bold('quest complete <task_id>')}');
         return;
       }
       final taskId = int.tryParse(args.first);
       if (taskId == null) {
-        print('Task ID must be a number!');
+        print(boldRed('Task ID must be a number!'));
         return;
       }
       completeTask(db, taskId);
@@ -141,11 +139,12 @@ quest reset     → 🔄 Reset player stats to the beginning
       break;
 
     case 'end':
-      if (!isDayStarted(db)) {
-        print('❌ You haven\'t started your day yet, type `quest begin` to start.');
+      // Check if day is started OR if end is already confirmed (which means day was started)
+      if (!isDayStarted(db) && !isEndConfirmed(db)) {
+        print(boldRed('❌ You haven\'t started your day yet, type `quest begin` to start.'));
         return;
       }
-      endDay(db);
+      await endDay(db);
       break;
 
     case 'reset':
@@ -153,6 +152,6 @@ quest reset     → 🔄 Reset player stats to the beginning
       break;
 
     default:
-      print('Unknown command. Type `quest help` to see all commands.');
+      print(boldYellow('Unknown command. Type `quest help` to see all commands.'));
   }
 }

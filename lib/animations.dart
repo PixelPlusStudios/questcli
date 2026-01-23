@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:quest/sounds.dart';
+import 'package:quest/colors.dart';
 
 Future<void> slowprint(String text, {int delayMs = 25}) async {
   final bytes = utf8.encode(text);
@@ -20,8 +21,8 @@ String coloredHpBar(int currentHp, int maxHp, {int length = 20}) {
   final filledLength = ((currentHp / maxHp) * length).round().clamp(0, length);
   final emptyLength = length - filledLength;
 
-  final filledBar = '\x1B[95m' + '█' * filledLength + '\x1B[0m'; // pink
-  final emptyBar = '\x1B[97m' + '░' * emptyLength + '\x1B[0m';   // grey
+  final filledBar = '\x1B[95m${'█' * filledLength}\x1B[0m'; // pink
+  final emptyBar = '\x1B[97m${'░' * emptyLength}\x1B[0m';   // grey
   return filledBar + emptyBar;
 }
 
@@ -35,7 +36,7 @@ Future<bool> animateBossFight({
   stdout.write('\x1B[2J\x1B[0;0H'); // clear screen
   final maxBarHp = max(playerHp, bossDifficulty);
 
-  await slowprint("🌑 Night falls...");
+  await slowprint(boldMagenta("🌑 Night falls..."));
   await Future.delayed(Duration(milliseconds: 400));
 
   await slowprint("A presence stirs...");
@@ -44,13 +45,7 @@ Future<bool> animateBossFight({
   await slowprint("\n$bossEmoji $bossName appears!");
   await Future.delayed(Duration(milliseconds: 400));
 
-  print("━━━━━━━━━━━━━━━━━━━━━━");
-  print("$bossEmoji $bossName  ${coloredHpBar(bossDifficulty, maxBarHp)}");
-  await Future.delayed(Duration(milliseconds: 400));
-  print("\n🧙 You        ${coloredHpBar(playerHp, maxBarHp)}");
-  print("━━━━━━━━━━━━━━━━━━━━━━\n");
-
-  await slowprint("⚔️ You attack!");
+  await slowprint(boldYellow("⚔️ You attack!"));
   await playSound('lib/assets/sword.mp3');
   await slowprint("💥 SLASH!!");
   await Future.delayed(Duration(milliseconds: 400));
@@ -61,6 +56,11 @@ Future<bool> animateBossFight({
   await Future.delayed(Duration(milliseconds: 300));
 
   await slowprint("🎯 Roll: $roll vs Your Power: $playerHp\n\n");
+    print(dim('━━━━━━━━━━━━━━━━━━━━━━'));
+  print("${boldRed('$bossEmoji $bossName')}  ${coloredHpBar(bossDifficulty, maxBarHp)}");
+  await Future.delayed(Duration(milliseconds: 400));
+  print("\n${boldCyan('🧙 You')}        ${coloredHpBar(playerHp, maxBarHp)}");
+  print("${dim('━━━━━━━━━━━━━━━━━━━━━━')}\n");
 await Future.delayed(Duration(milliseconds: 500));
   return roll <= playerHp;
 }
@@ -69,7 +69,7 @@ await Future.delayed(Duration(milliseconds: 500));
 Future<void> printAsciiArt(String filePath, {int delayMs = 0}) async {
   final file = File(filePath);
   if (!file.existsSync()) {
-    print('⚠️ ASCII art file not found: $filePath');
+    print('${boldYellow('⚠️ ASCII art file not found:')} ${dim(filePath)}');
     return;
   }
 

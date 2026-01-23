@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:quest/colors.dart';
 
 /// Plays a sound file based on the current platform.
 /// Supports .wav (recommended) and .mp3.
@@ -6,7 +7,7 @@ import 'dart:io';
 Future<void> playSound(String filePath) async {
   try {
     if (!File(filePath).existsSync()) {
-      print('⚠️ Sound file not found: $filePath');
+      print('${boldYellow('⚠️ Sound file not found:')} ${dim(filePath)}');
       return;
     }
 
@@ -28,9 +29,9 @@ Future<void> playSound(String filePath) async {
       '''.replaceAll('%FILE%', filePath.replaceAll(r'\', r'\\'));
       await Process.run('powershell', ['-Command', psCommand]);
     } else {
-      print('⚠️ Unsupported platform for sound: ${Platform.operatingSystem}');
+      print('${boldYellow('⚠️ Unsupported platform for sound:')} ${dim(Platform.operatingSystem)}');
     }
   } catch (e) {
-    print('⚠️ Failed to play sound: $e');
+    print('${boldYellow('⚠️ Failed to play sound:')} ${dim('$e')}');
   }
 }
