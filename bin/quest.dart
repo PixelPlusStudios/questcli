@@ -57,7 +57,7 @@ void main(List<String> arguments) async{
     case 'begin':
       if (isDayStarted(db)) {
         print(boldYellow('⚠️ You have already started your day!'));
-        print(yellow('Type `quest end` to end your day, or continue with your quests.'));
+        print(yellow('Type `quest add "<your tasks>"` to add tasks.'));
         return;
       }
       await playSound('lib/assets/begin.mp3');
