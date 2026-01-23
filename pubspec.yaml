@@ -1,7 +1,7 @@
 name: quest
-description: A gamified command-line traacker application.
+description: A gamified command-line task tracker.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/PixelPlusStudios/questcli
 
 environment:
   sdk: ^3.10.7

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:quest/asset_path.dart';
 import 'package:quest/sounds.dart';
 
 Future<void> slowprint(String text, {int delayMs = 25}) async {
@@ -51,7 +52,7 @@ Future<bool> animateBossFight({
   print("━━━━━━━━━━━━━━━━━━━━━━\n");
 
   await slowprint("⚔️ You attack!");
-  await playSound('assets/sword.mp3');
+  await playSound(resolveAssetPath('sword.mp3'));
   await slowprint("💥 SLASH!!");
   await Future.delayed(Duration(milliseconds: 400));
 

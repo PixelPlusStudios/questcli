@@ -1,14 +1,16 @@
 import 'dart:io';
+import 'package:quest/asset_path.dart';
 import 'package:quest/animations.dart';
 import 'package:quest/sounds.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:path/path.dart' as path;
 
-
 // --------------------
 // App Folder Setup
 // --------------------
-final homeDir = Platform.environment['HOME'] ?? '.';
+final homeDir = Platform.environment['USERPROFILE'] ??
+    Platform.environment['HOME'] ??
+    '.';
 final appDir = Directory(path.join(homeDir, '.quest'));
 final dbPath = path.join(appDir.path, 'quest.db');
 
@@ -17,6 +19,7 @@ void createAppFolder() {
     appDir.createSync();
     print('Created app folder at ${appDir.path}');
   }
+  copyAssetsToAppDirIfNeeded();
 }
 
 // --------------------
@@ -313,11 +316,11 @@ await slowprint('• 🔮 Your fate is drawn by a 🎲 roll.');
 await slowprint('• If the roll is ≤ your HP → you WIN🏆');
 await slowprint('• If the roll is > your HP → you LOSE👎\n');
 
-  await playSound('assets/demon.mp3');
+  await playSound(resolveAssetPath('demon.mp3'));
   await slowprint('Boss: ${boss.emoji} ${boss.name} (Difficulty: $bossDifficulty)');
   await slowprint('❤️ Your HP: $hp');
 
-  await printAsciiArt('assets/${boss.name}.txt', delayMs: 30); 
+  await printAsciiArt(resolveAssetPath('${boss.name}.txt'), delayMs: 30); 
   // 3️⃣ Boss roll
   // final rng = Random();
   // final roll = rng.nextInt(hp + bossDifficulty); // scaled roll

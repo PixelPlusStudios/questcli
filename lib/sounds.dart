@@ -21,7 +21,8 @@ Future<void> playSound(String filePath) async {
         await Process.run('mpg123', [filePath]);
       }
     } else if (Platform.isWindows) {
-      // Windows → PowerShell Media.SoundPlayer
+      // Windows: Media.SoundPlayer only supports .wav; .mp3 is skipped.
+      if (filePath.toLowerCase().endsWith('.mp3')) return;
       final psCommand = r'''
         $player = New-Object Media.SoundPlayer "%FILE%";
         $player.PlaySync();

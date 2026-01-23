@@ -1,5 +1,6 @@
 import 'package:args/args.dart';
 import 'package:quest/animations.dart';
+import 'package:quest/asset_path.dart';
 import 'package:quest/sounds.dart';
 import 'package:quest/storage.dart';
 
@@ -17,6 +18,7 @@ void main(List<String> arguments) async{
 
   // ArgParser for flags & commands
   final parser = ArgParser()
+    ..addFlag('help', abbr: 'h', help: 'Show usage', negatable: false)
     ..addFlag('version', abbr: 'v', help: 'Show version info')
     ..addCommand('begin')
     ..addCommand('menu')
@@ -31,18 +33,30 @@ void main(List<String> arguments) async{
     ..addCommand('rest')
     ..addCommand('potion');
 
-  final results = parser.parse(arguments);
+  ArgResults results;
+  try {
+    results = parser.parse(arguments);
+  } on FormatException catch (e) {
+    print(e.message);
+    return;
+  }
 
-  // Version
+  // --help, -h
+  if (results['help'] == true) {
+    print(parser.usage);
+    return;
+  }
+
+  // --version, -v
   if (results['version'] == true) {
-    print('Quest v0.1.0');
+    print('Quest v1.0.0');
     return;
   }
 
   // No command
   if (results.command == null) {
     print('Welcome to Quest CLI!');
-    print('Type `quest --help` to see commands.');
+    print('Type `quest --help` or `quest help` to see commands.');
     return;
   }
 
@@ -53,7 +67,7 @@ void main(List<String> arguments) async{
     // BEGIN → Story Intro
     // -------------------
     case 'begin':
-      await playSound('assets/begin.mp3');
+      await playSound(resolveAssetPath('begin.mp3'));
       await slowprint('🧙 Welcome, Adventurer - Let your journey begin!');
       await slowprint('Type `quest menu` to see your available actions.');
       await slowprint('Type `quest help` to see all commands.');

@@ -1,32 +1,79 @@
-# questcli
-A Dart CLI, Gamified Tak-Manager
+# Quest CLI
 
-Turn your daily tasks into a role-playing adventure! Complete quests, gain XP, face bosses, and level up — all in your terminal.
+A gamified terminal task tracker. Turn your daily tasks into a role-playing adventure: complete quests, gain XP, face bosses, and level up — all in your terminal.
 
-🚀 Installation
-Mac / Linux
+---
 
-Download the latest release
+## Installation
 
-Make it executable:
+Pre-built binaries are on [GitHub Releases](https://github.com/YOUR_USERNAME/questcli/releases). Each archive contains:
 
--> chmod +x quest
+- `bin/quest` (or `bin/quest.exe` on Windows) — the executable  
+- `lib/` — native libraries (sqlite3)  
+- `assets/` — sounds and art  
 
-(Optional) Move it to a folder in your PATH so you can run it anywhere:
+**Keep `bin/`, `lib/`, and `assets/` together** (or add the extracted folder’s `bin` to PATH).
 
--> sudo mv quest /usr/local/bin/quest
+### macOS
 
-=====================================================================
+1. Download `quest-<version>-darwin-arm64.zip` (Apple Silicon) or `quest-<version>-darwin-amd64.zip` (Intel).
+2. Unzip, then in Terminal:
 
-Windows
+```bash
+chmod +x quest-*/bin/quest
+# Option A: add bin to PATH (e.g. in ~/.zshrc)
+export PATH="$PATH:$(pwd)/quest-<version>-darwin-arm64/bin"
 
-Download quest.exe from the Releases page
+# Option B: install for all users (copy entire folder, then link bin)
+sudo cp -R quest-* /usr/local/quest && sudo ln -sf /usr/local/quest/bin/quest /usr/local/bin/quest
+```
 
-Place it in a folder of your choice.
+3. Run:
 
-Add the folder to your system PATH (optional) so you can run quest from any terminal.
+```bash
+quest --help
+quest begin
+```
 
-=====================================================================
+### Linux
+
+1. Download `quest-<version>-linux-amd64.zip` from [Releases](https://github.com/YOUR_USERNAME/questcli/releases).
+2. Unzip, then:
+
+```bash
+chmod +x quest-*/bin/quest
+export PATH="$PATH:$(pwd)/quest-<version>-linux-amd64/bin"
+```
+
+3. Run `quest --help` or `quest begin`.
+
+### Windows
+
+1. Download `quest-<version>-windows-amd64.zip` from [Releases](https://github.com/YOUR_USERNAME/questcli/releases).
+2. Unzip to a folder (e.g. `C:\Tools\quest`).
+3. Add `C:\Tools\quest\bin` to your [PATH](https://learn.microsoft.com/en-us/windows/win32/procthread/environment-variables).
+4. In PowerShell or Command Prompt:
+
+```powershell
+quest --help
+quest begin
+```
+
+> **Note:** On Windows, sound uses `.wav` only; `.mp3` effects are skipped.
+
+---
+
+## One-line install (macOS / Linux)
+
+Replace `VERSION` and `PLATFORM` (e.g. `1.0.0`, `darwin-arm64`):
+
+```bash
+curl -sL https://github.com/YOUR_USERNAME/questcli/releases/download/vVERSION/quest-VERSION-PLATFORM.zip -o q.zip && unzip -o q.zip && rm q.zip && chmod +x quest-*/bin/quest && export PATH="$PATH:$(pwd)/quest-VERSION-PLATFORM/bin"
+```
+
+Then run `quest --help`.
+
+---
 
 🎮 Getting Started
 Start the game
@@ -91,8 +138,22 @@ Terminal capable of ANSI colors is recommended for best visuals.
 
 📦 Updates
 
-Download the latest version from the Releases page
-Replace the old binary with the new one.
+Download the latest version from the [Releases](https://github.com/YOUR_USERNAME/questcli/releases) page and replace the old binary (and `assets` folder if needed).
+
+---
+
+## Building / Releasing
+
+**Prerequisites:** [Dart SDK](https://dart.dev/get-dart) 3.10+.
+
+The project uses `sqlite3`, which relies on build hooks, so you must use `dart build cli` (not `dart compile exe`). The first build needs network so sqlite3 can fetch native libraries.
+
+- **macOS / Linux:** `./scripts/build.sh` → `release/quest-<version>-<os>-<arch>.zip`
+- **Windows:** `.\scripts\build-windows.ps1` → `release\quest-<version>-windows-amd64.zip`
+
+To publish a release: push a tag `v*` (e.g. `git tag v1.0.0 && git push origin v1.0.0`). The [GitHub Actions workflow](.github/workflows/release.yml) runs `dart build cli` on macOS, Linux, and Windows and uploads the zips to the release.
+
+> **Replace `YOUR_USERNAME`** in this README with your GitHub username or org so install links work.
 
 🎉 Enjoy Your Adventure!
 
