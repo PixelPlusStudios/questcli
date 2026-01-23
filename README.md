@@ -4,68 +4,32 @@ A Dart CLI, Gamified Tak-Manager
 Turn your daily tasks into a role-playing adventure! Complete quests, gain XP, face bosses, and level up — all in your terminal.
 
 🚀 Installation
+Quest is distributed as a **prebuilt executable bundle**.  
 
-## Step 1: Download the Application Bundle
+## macOS (Apple Silicon & Intel) & Linux
 
-Go to the [Releases](https://github.com/PixelPlusStudios/questcli/releases/tag/v1.0.0) page on GitHub.
+### 1. Download
+Go to **GitHub → Releases** and download: quest.zip
 
-Under the latest version, download the `.zip` or `.tar.gz` file for your operating system:
-
-*   **macOS (Apple Silicon/Intel):** `quest-macos-*.zip`
-*   **Windows:** `quest-windows-*.zip`
-*   **Linux:** `quest-linux-*.tar.gz`
+Extract it. You should get a folder named `quest`.
 
 ---
 
-## Step 2: Extract the Files
+### 2. Install globally
 
-Extract the contents of the downloaded archive file. You will see a new folder (e.g., `quest-bundle`) that contains `bin` and `lib` subdirectories.
-
-Move this `quest-bundle` folder to a permanent, safe location on your computer.
-
-*   **Suggested Location (macOS/Linux):** `/usr/local/share/`
-*   **Suggested Location (Windows):** `C:\Program Files\`
-
----
-
-## Step 3: Add to System PATH (Run Globally)
-
-This step allows you to run the `quest` command from *any* folder in your terminal.
-
-### 🍎 macOS and Linux
-
-1.  **Open your terminal** and open your shell configuration file. This is usually `.zshrc` (macOS) or `.bashrc` (Linux):
-    ```bash
-    nano ~/.zshrc
-    # or nano ~/.bashrc
-    ```
-
-2.  **Add the `bin` path** to the bottom of the file (adjust the path to where you moved the bundle):
-    ```bash
-    export PATH="$PATH:/usr/local/share/quest-bundle/bin"
-    ```
-
-3.  **Save and Restart:** Save the file (`Ctrl+O`, `Enter`, `Ctrl+X`). Close and reopen your terminal window (or run `source ~/.zshrc`) for the changes to apply.
-
-### 🪟 Windows
-
-1.  **Open "Environment Variables"**: Search for "Environment Variables" in the Start menu and select "Edit the system environment variables".
-
-2.  **Edit the Path Variable**: In the "System Properties" window, click the **Environment Variables...** button. Under "User variables", select the `Path` variable and click **Edit...**.
-
-3.  **Add the `bin` path**: Click **New** and paste the full path to your `bin` folder (e.g., `C:\Program Files\quest-bundle\bin`).
-
-4.  **Save:** Click OK on all windows to save the changes. Close and reopen your Command Prompt or PowerShell window.
-
----
-
-## Step 4: Verify and Run
-
-Open any new terminal or command prompt window. Type the command name to verify it works:
+Open Terminal in the folder where `quest` was extracted and run:
 
 ```bash
-quest --help
+sudo mkdir -p /usr/local/lib /usr/local/bin
+sudo mv quest /usr/local/lib/quest
+sudo ln -s /usr/local/lib/quest/bundle/bin/quest /usr/local/bin/quest
 ```
+### 3. Verify
+
+```bash
+quest help
+```
+
 
 🎮 Getting Started
 
