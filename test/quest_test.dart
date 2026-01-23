@@ -1,4 +1,4 @@
-import 'package:quest/quest.dart';
+import 'package:bin/quest.dart';
 import 'package:test/test.dart';
 
 void main() {
