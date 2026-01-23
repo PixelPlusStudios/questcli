@@ -29,7 +29,8 @@ void main(List<String> arguments) async{
     ..addCommand('end')     // optional future feature
     ..addCommand('water')
     ..addCommand('rest')
-    ..addCommand('potion');
+    ..addCommand('potion')
+    ..addCommand('reset');
 
   final results = parser.parse(arguments);
 
@@ -53,10 +54,11 @@ void main(List<String> arguments) async{
     // BEGIN → Story Intro
     // -------------------
     case 'begin':
-      await playSound('assets/begin.mp3');
+      await playSound('lib/assets/begin.mp3');
       await slowprint('🧙 Welcome, Adventurer - Let your journey begin!');
       await slowprint('Type `quest menu` to see your available actions.');
       await slowprint('Type `quest help` to see all commands.');
+      startDay(db);
       break;
 
     // -------------------
@@ -84,6 +86,7 @@ quest rest      → 🛌 Meditate → recover, gain XP
 quest potion    → 🧪 Elixir →	use while defeating demons
 quest map       → 🗺️ World, the realm, unlocked places
 quest end       → 🌙 End the day, Nightfall is upon us
+quest reset     → 🔄 Reset player stats to the beginning
 ''');
       break;
 
@@ -133,15 +136,21 @@ quest end       → 🌙 End the day, Nightfall is upon us
       gainPotion(db, 'rest');
       break;
 
-      case 'map':
-  showMap(db);
-  break;
+    case 'map':
+      showMap(db);
+      break;
 
-    
     case 'end':
-  endDay(db);
-  break;
+      if (!isDayStarted(db)) {
+        print('❌ You haven\'t started your day yet, type `quest begin` to start.');
+        return;
+      }
+      endDay(db);
+      break;
 
+    case 'reset':
+      resetPlayerStats(db);
+      break;
 
     default:
       print('Unknown command. Type `quest help` to see all commands.');

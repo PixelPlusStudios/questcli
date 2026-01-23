@@ -51,7 +51,7 @@ Future<bool> animateBossFight({
   print("━━━━━━━━━━━━━━━━━━━━━━\n");
 
   await slowprint("⚔️ You attack!");
-  await playSound('assets/sword.mp3');
+  await playSound('lib/assets/sword.mp3');
   await slowprint("💥 SLASH!!");
   await Future.delayed(Duration(milliseconds: 400));
 

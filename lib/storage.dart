@@ -50,9 +50,17 @@ Database initDatabase() {
   db.execute('''
     CREATE TABLE IF NOT EXISTS day_state (
       id INTEGER PRIMARY KEY,
-      end_confirmed INTEGER
+      end_confirmed INTEGER,
+      day_started INTEGER
     );
   ''');
+  
+  // Add day_started column if it doesn't exist (for existing databases)
+  try {
+    db.execute('ALTER TABLE day_state ADD COLUMN day_started INTEGER;');
+  } catch (e) {
+    // Column already exists, ignore error
+  }
 
   //bosses defeated table
   db.execute('''
@@ -212,6 +220,23 @@ void showPlayerStats(Database db) {
   print('Days Survived(Level): ${p['level']}\nPlace: ${p['place']}');
 }
 
+// Reset player stats to initial values
+void resetPlayerStats(Database db) {
+  final result = db.select('SELECT id FROM player LIMIT 1;');
+  if (result.isEmpty) {
+    // If somehow no player exists, create the default one
+    createDefaultPlayer(db);
+    return;
+  }
+
+  final int id = result.first['id'];
+  db.execute(
+    'UPDATE player SET hp = 100, xp = 0, potions = 0, level = 1, place = ? WHERE id = ?;',
+    ['Village', id],
+  );
+  print('🔄 Player stats have been reset to the beginning.');
+}
+
 // -------------------
 // Interactive Menu
 // -------------------
@@ -313,11 +338,11 @@ await slowprint('• 🔮 Your fate is drawn by a 🎲 roll.');
 await slowprint('• If the roll is ≤ your HP → you WIN🏆');
 await slowprint('• If the roll is > your HP → you LOSE👎\n');
 
-  await playSound('assets/demon.mp3');
+  await playSound('lib/assets/demon.mp3');
   await slowprint('Boss: ${boss.emoji} ${boss.name} (Difficulty: $bossDifficulty)');
   await slowprint('❤️ Your HP: $hp');
 
-  await printAsciiArt('assets/${boss.name}.txt', delayMs: 30); 
+  await printAsciiArt('lib/assets/${boss.name}.txt', delayMs: 30); 
   // 3️⃣ Boss roll
   // final rng = Random();
   // final roll = rng.nextInt(hp + bossDifficulty); // scaled roll
@@ -467,7 +492,20 @@ void confirmEnd(Database db) {
 }
 
 void resetDayState(Database db) {
-  db.execute('UPDATE day_state SET end_confirmed = 0 WHERE id = 1;');
+  db.execute('UPDATE day_state SET end_confirmed = 0, day_started = 0 WHERE id = 1;');
+}
+
+// --------------------
+// Day Start Helpers
+// --------------------
+
+bool isDayStarted(Database db) {
+  final result = db.select('SELECT day_started FROM day_state WHERE id = 1;');
+  return result.isNotEmpty && result.first['day_started'] == 1;
+}
+
+void startDay(Database db) {
+  db.execute('INSERT OR REPLACE INTO day_state (id, day_started, end_confirmed) VALUES (1, 1, 0);');
 }
 
 void clearTasks(Database db) {
