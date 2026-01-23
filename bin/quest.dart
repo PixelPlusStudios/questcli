@@ -55,6 +55,11 @@ void main(List<String> arguments) async{
     // BEGIN → Story Intro
     // -------------------
     case 'begin':
+      if (isDayStarted(db)) {
+        print(boldYellow('⚠️ You have already started your day!'));
+        print(yellow('Type `quest end` to end your day, or continue with your quests.'));
+        return;
+      }
       await playSound('lib/assets/begin.mp3');
       await slowprint(boldCyan('🧙 Welcome, Adventurer - Let your journey begin!'));
       await slowprint('Type `quest menu` to see your available actions.');
