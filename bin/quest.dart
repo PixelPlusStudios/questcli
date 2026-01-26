@@ -17,7 +17,7 @@ void main(List<String> arguments) async{
   }
 
   // ArgParser for flags & commands
-  final parser = ArgParser()
+  final parser = ArgParser(allowTrailingOptions: true,)
     ..addFlag('version', abbr: 'v', help: 'Show version info')
     ..addCommand('begin')
     ..addCommand('menu')
@@ -26,14 +26,21 @@ void main(List<String> arguments) async{
     ..addCommand('list')
     ..addCommand('complete')
     ..addCommand('stats')
-    ..addCommand('map')     // optional future feature
-    ..addCommand('end')     // optional future feature
+    ..addCommand('map')
+    ..addCommand('end')
     ..addCommand('water')
     ..addCommand('rest')
     ..addCommand('potion')
     ..addCommand('reset');
 
-  final results = parser.parse(arguments);
+ArgResults results;
+try {
+  results = parser.parse(arguments);
+} on FormatException catch (e) {
+  print(boldRed('❌ Invalid command usage.'));
+  print(yellow('Hint: Use `quest help` to see valid commands.'));
+  return;
+}
 
   // Version
   if (results['version'] == true) {
@@ -116,8 +123,8 @@ void main(List<String> arguments) async{
         return;
       }
       final taskId = int.tryParse(args.first);
-      if (taskId == null) {
-        print(boldRed('Task ID must be a number!'));
+      if (taskId == null || taskId <= 0) {
+        print(boldRed('Task ID must be a valid number!, Check `quest list` for IDs.'));
         return;
       }
       completeTask(db, taskId);
