@@ -67,6 +67,21 @@ Checks for unfinished quests.
 Triggers a boss fight if all requirements are met.
 Updates your level and location.
 
+Quest Add
+You can start adding tasks by:
+
+```bash
+quest add "task name"
+```
+
+Quest Complete
+You can complete tasks by task_id which you can get from "quest list":
+
+```bash
+quest complete task_id
+```
+Eg: quest complete 1
+
 🗺️ Map & Progress
 
 Your progress is visualized with an HP bar and world map.
