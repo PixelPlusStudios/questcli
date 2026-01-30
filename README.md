@@ -16,16 +16,26 @@ Extract it. You should get a folder named `quest`.
 ---
 
 ### 2. Install globally
+Keep the quest folder in a permanent location on your system.
 
-Open Terminal in the folder where `quest` was extracted and run:
+Open Terminal in the directory where quest was extracted and run:
 
 ```bash
-sudo mkdir -p /usr/local/lib /usr/local/bin
-sudo mv quest /usr/local/lib/quest
-sudo ln -s /usr/local/lib/quest/bundle/bin/quest /usr/local/bin/quest
+nano ~/.zshrc
 ```
+Add the following line at the end of the file (replace with the full path to the bundle/bin folder inside your extracted quest directory):
+```bash
+export PATH="/full/path/to/quest/bundle/bin:$PATH"
+```
+Save and close the file, then run:
+```bash
+source ~/.zshrc
+```
+Close the terminal.
+
 ### 3. Verify
 
+Open a new terminal.
 ```bash
 quest help
 ```
